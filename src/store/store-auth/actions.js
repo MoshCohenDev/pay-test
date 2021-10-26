@@ -5,7 +5,6 @@ export default {
 
   async registerUser({commit}, payload) {
     Loading.show()
-
     const res = await axios.post("http://localhost:3004/users/register", payload);
     if (res) {
       Loading.hide()

@@ -5,6 +5,7 @@ const User = require('../models/usersModels');
 
 module.exports = {
   register: (req, res) => {
+    console.log(req.body)
     const {userName, password} = req.body;
     User.find({userName}).then((users) => {
       if (users.length >= 1) {
