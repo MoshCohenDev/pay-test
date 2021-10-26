@@ -5,7 +5,7 @@
         <q-btn
           flat
           v-if="!loggedIn"
-          to="/auth"
+          to="/"
           icon-right="account_circle"
           label="Login"
           class="absolute-right"
@@ -31,37 +31,6 @@
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
-    <q-drawer
-      v-model="leftDrawerOpen"
-      :breakpoint="500"
-      show-if-above
-      bordered
-      v-if="loggedIn"
-      :width="200"
-    >
-      <q-scroll-area class="fit">
-        <q-list>
-          <q-item-label header class="text-h6 text-black">
-            My-Rent
-          </q-item-label>
-
-          <q-item
-            class="text-weight-bold icons"
-            v-for="nav in navs"
-            :key="nav.label"
-            :to="nav.to"
-            exact
-            clickable>
-            <q-item-section avatar>
-              <q-icon :name="nav.icon"/>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label> {{ nav.label }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
     <q-page-container>
       <router-view/>
     </q-page-container>
@@ -92,13 +61,12 @@ export default {
     ...mapState('auth', ['loggedIn', 'userId', 'img'])
   },
   methods: {
-    ...mapActions('auth', ['logoutUser'])
-  },
-  watch: {
-    loggedIn() {
-      console.log(this.loggedIn)
+    ...mapActions('auth', ['logOut']),
+    logoutUser() {
+      this.logOut()
     }
-  }
+
+  },
 }
 </script>
 <style lang="scss">
@@ -126,6 +94,7 @@ export default {
   height: 40px;
   margin: 5px;
 }
+
 //.logout{
 //  background: #1165d2;
 //  border-radius: 50%;

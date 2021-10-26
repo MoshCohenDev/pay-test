@@ -12,9 +12,7 @@ module.exports = {
       } else {
         user = new User({userName, firstName, lastName, password, id})
         await user.save()
-        return res.status(200).json({
-          msg: 'user created'
-        })
+        return res.status(200).json(user)
       }
     } catch (e) {
       res.status(400).json({
@@ -25,14 +23,12 @@ module.exports = {
   login: async (req, res) => {
     try {
       const {userName, password} = req.body
+
       let user = await User.findOne({userName})
-      console.log(user)
       if (user.password === password) {
         return res.status(200).json(user)
       } else {
-        return res.status(401).json({
-          msg: 'user not found'
-        })
+        return res.status(200).json(null)
       }
     } catch (e) {
       return res.status(400).json({

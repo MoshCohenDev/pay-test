@@ -1,24 +1,47 @@
-import {LocalStorage, Loading} from "quasar";
+import {LocalStorage, Loading, Notify} from "quasar";
 import axios from "axios";
 
 export default {
-
-  async registerUser({commit}, payload) {
-    Loading.show()
-    const res = await axios.post("http://localhost:3004/users/register", payload);
-    if (res) {
-      LocalStorage.set('user', res)
+  async registerUser({commit, dispatch}, payload) {
+    Loading.show
+    try {
+      const res = await axios.post("http://localhost:3004/users/register", payload);
+      console.log(res.data)
+      LocalStorage.set('user', res.data)
       Loading.hide()
-      commit('setUserByLogin', res)
-      LocalStorage.set('user', res)
-      commit('setLoggedIn', true)
+      commit('setUserByLogin', res.data)
+      dispatch('setUser')
+    } catch (e) {
+      console.log(e)
+      Loading.hide()
     }
   },
-  loginUser({}, payload) {
-    Loading.show()
-    const req = axios.post('https://localhost:3004/users/login',payload)
+  async loginUser({commit, dispatch}, payload) {
+    try {
+      const req = await axios.post('http://localhost:3004/users/login', payload)
+      if (req.data === null) {
+        Notify.create({
+          message: 'this user is not ',
+          color: 'red'
+        })
+      } else {
+        LocalStorage.set('user', req.data)
+        commit('setDataUsers', req.data)
+        dispatch('setUser',)
+      }
+    } catch (e) {
+      console.log(e)
+    }
   },
-  logoutUser() {
+  logOut({commit}) {
+    commit('setLoggedIn')
+    LocalStorage.clear()
+  },
+  async setUser({commit}) {
+    commit('setLoggedIn')
+    const usersData = await axios.get('http://localhost:3004/users/data')
+    console.log(usersData.data)
+    commit('setDataUsers', usersData.data)
   },
 
 }

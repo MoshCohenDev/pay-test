@@ -1,6 +1,6 @@
 export default {
   loggedIn: false,
-  users: [],
-
+  user: '',
+  users: ''
 
 }
