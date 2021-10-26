@@ -7,6 +7,7 @@ export default {
     Loading.show()
     const res = await axios.post("http://localhost:3004/users/register", payload);
     if (res) {
+      LocalStorage.set('user', res)
       Loading.hide()
       commit('setUserByLogin', res)
       LocalStorage.set('user', res)

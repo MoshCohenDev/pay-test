@@ -1,59 +1,47 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const User = require('../models/usersModels');
 
 module.exports = {
-  register: (req, res) => {
-    console.log(req.body)
-    const {userName, password} = req.body;
-    User.find({userName}).then((users) => {
-      if (users.length >= 1) {
-        return res.status(409).json({
-          message: 'Email exists'
+  register: async (req, res) => {
+    try {
+      const {userName, firstName, lastName, password, id} = req.body
+      let user = await User.findOne({userName})
+      if (user) {
+        return res.status(401).json({
+          msg: 'user exists'
+        })
+      } else {
+        user = new User({userName, firstName, lastName, password, id})
+        await user.save()
+        return res.status(200).json({
+          msg: 'user created'
         })
       }
-      bcrypt.hash(password, 10, (error, hash) => {
-        if (error) {
-          return res.status(500).json({
-            error
-          })
-        }
-        const user = new User({
-          _id: new mongoose.Types.ObjectId(),
-          email,
-          password: hash
-        })
-        user.save().then((result) => {
-          console.log(result);
-          res.status(200).json({
-            message: 'User created'
-          });
-        }).catch(error => {
-          res.status(500).json({
-            error
-          })
-        });
-      });
-    })
+    } catch (e) {
+      res.status(400).json({
+        msg: e
+      })
+    }
   },
   login: async (req, res) => {
     try {
-      const {password} = req.body
-      console.log(password)
-      const user = await User.find({password})
+      const {userName, password} = req.body
+      let user = await User.findOne({userName})
       console.log(user)
-      if (user.length === 0) {
-        return res.status(404).json({
-          message: "this password not"
-        })
-      } else {
-        console.log(user)
+      if (user.password === password) {
         return res.status(200).json(user)
+      } else {
+        return res.status(401).json({
+          msg: 'user not found'
+        })
       }
     } catch (e) {
-      console.log(e)
+      return res.status(400).json({
+        msg: e
+      })
     }
-
+  },
+  getAllUsers: async (req, res) => {
+    const users = await User.find()
+    return res.status(200).json(users)
   }
 }
