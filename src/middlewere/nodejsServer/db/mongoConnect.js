@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 mongoose.connect(
-  "mongodb+srv://moshe:q1w2e3r4@youtube-roject.sh9ax.mongodb.net/pay-test?retryWrites=true&w=majority",
+  "mongodb+srv://moshe:q1w2e3r4@youtube-roject.sh9ax.mongodb.net/express0?retryWrites=true&w=majority",
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 

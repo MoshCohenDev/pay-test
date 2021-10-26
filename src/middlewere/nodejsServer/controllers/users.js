@@ -1,21 +1,58 @@
-const {users} = require("./utils");
-const {validUser, foodModel} = require("../models/usersModels");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/usersModels');
 
 module.exports = {
-  login: async (req, res) => {
-    let userLogin = req.body;
-    users.forEach((user) => {
-      if (user.email === userLogin.email) {
-        return res.status(200).json(user);
+  register: (req, res) => {
+    const {userName, password} = req.body;
+    User.find({userName}).then((users) => {
+      if (users.length >= 1) {
+        return res.status(409).json({
+          message: 'Email exists'
+        })
       }
-    });
-    return res.status(401).json({
-      msg: 'dfsdfsdsdf'
+      bcrypt.hash(password, 10, (error, hash) => {
+        if (error) {
+          return res.status(500).json({
+            error
+          })
+        }
+        const user = new User({
+          _id: new mongoose.Types.ObjectId(),
+          email,
+          password: hash
+        })
+        user.save().then((result) => {
+          console.log(result);
+          res.status(200).json({
+            message: 'User created'
+          });
+        }).catch(error => {
+          res.status(500).json({
+            error
+          })
+        });
+      });
     })
   },
-  register: async (req, res) => {
-    let validBody = validUser(req.body);
-    console.log(validBody)
+  login: async (req, res) => {
+    try {
+      const {password} = req.body
+      console.log(password)
+      const user = await User.find({password})
+      console.log(user)
+      if (user.length === 0) {
+        return res.status(404).json({
+          message: "this password not"
+        })
+      } else {
+        console.log(user)
+        return res.status(200).json(user)
+      }
+    } catch (e) {
+      console.log(e)
+    }
 
-  },
-};
+  }
+}
