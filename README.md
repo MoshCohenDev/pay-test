@@ -10,8 +10,10 @@ npm install
 ###  Start the server 
 
 ``middlewere/nodejsServer
+```bash
 
-``npm start
+npm start
+```
 
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
