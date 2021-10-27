@@ -9,7 +9,6 @@ export default {
       console.log(res.data)
       LocalStorage.set('user', res.data)
       Loading.hide()
-      commit('setUserByLogin', res.data)
       dispatch('setUser')
     } catch (e) {
       console.log(e)
@@ -26,11 +25,13 @@ export default {
         })
       } else {
         LocalStorage.set('user', req.data)
-        commit('setDataUsers', req.data)
         dispatch('setUser',)
       }
     } catch (e) {
-      console.log(e)
+      Notify.create({
+        message: 'this user is not ',
+        color: 'red'
+      })
     }
   },
   logOut({commit}) {
@@ -40,7 +41,8 @@ export default {
   async setUser({commit}) {
     commit('setLoggedIn')
     const usersData = await axios.get('http://localhost:3004/users/data')
-    console.log(usersData.data)
+    LocalStorage.set('data', usersData.data)
+    await console.log(usersData.data)
     commit('setDataUsers', usersData.data)
   },
 

@@ -28,43 +28,61 @@
     <q-table
       class="q-pa-md text-weight-bold"
       v-if="loggedIn"
-      :rows="users"
+      :rows="!users?rows:users"
       :columns="columns"
       row-key="name">
     </q-table>
   </q-page>
 </template>
 <script>
-import RegisterLogin from "components/auth/Register";
-import {mapState} from "vuex";
+import {mapState, mapActions} from "vuex";
 import LoginRegister from "components/auth/login-register";
-import {LocalStorage} from "quasar";
+
 const columns = [
   {
-    name: 'name',
+    name: "name",
     required: true,
-    label: 'ID',
-    align: 'left',
-    field: row => row.firstName,
-    sortable: true
+    label: "ID",
+    align: "left",
+    field: (row) => row.firstName,
+    sortable: true,
   },
-  {name: 'first name', align: 'center', label: 'first name', field: row => row.firstName, sortable: true},
-  {name: 'lastName', align: 'center', label: 'lastName', field: row => row.lastName, },
-  {name: 'Price', align: 'center', label: 'user name', field: row => row.userName},
-  {name: 'id', align: 'center', label: 'id', field: row => row.id},
-]
+  {
+    name: "first name",
+    align: "center",
+    label: "first name",
+    field: (row) => row.firstName,
+    sortable: true,
+  },
+  {
+    name: "lastName",
+    align: "center",
+    label: "lastName",
+    field: (row) => row.lastName,
+  },
+  {
+    name: "Price",
+    align: "center",
+    label: "user name",
+    field: (row) => row.userName,
+  },
+  // { name: "id", align: "center", label: "id", field: (row) => row.id },
+];
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
       tab: "login",
       columns,
+      rows: []
     };
   },
-  components: {LoginRegister, RegisterLogin},
-  methods: {},
+  components: {LoginRegister},
+  methods: {
+    ...mapActions("auth", ["setUser"]),
+  },
   computed: {
-    ...mapState('auth', ['loggedIn', 'users'])
+    ...mapState("auth", ["loggedIn", "users"]),
   },
 
 };
@@ -75,7 +93,6 @@ export default {
   max-width: 900px;
   margin: 0 auto;
 }
-
 
 .password {
   color: #111010;
